@@ -7,6 +7,9 @@ module SuiteSparse
 import Base: \
 import LinearAlgebra: ldiv!, rdiv!
 
+const libsuitesparseconfig   = joinpath(@__DIR__, "..", "deps", "usr", "lib", "libsuitesparseconfig")
+const libsuitesparse_wrapper = joinpath(@__DIR__, "..", "deps", "usr", "lib", "libsuitesparse_wrapper")
+
 ## Functions to switch to 0-based indexing to call external sparse solvers
 
 # Convert from 1-based to 0-based indices
@@ -27,7 +30,7 @@ if Base.USE_GPL_LIBS
     include("umfpack.jl")
     include("cholmod.jl")
     include("spqr.jl")
-    include("deprecated.jl")
+    # include("deprecated.jl")
 end
 
 end # module SuiteSparse
