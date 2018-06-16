@@ -6,6 +6,9 @@ makedocs(
     modules = [SuiteSparse.CHOLMOD, SuiteSparse.UMFPACK, SuiteSparse.SPQR],
     pages = [
         "index.md",
+        "cholmod.md",
+        "umfpack.md",
+        "spqr.md",
     ]
 )
 
