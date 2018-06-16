@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>SPQR · SuiteSparse.jl</title><link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" type="text/css"/><link href="https://fonts.googleapis.com/css?family=Lato|Roboto+Mono" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js" data-main="assets/documenter.js"></script><script src="siteinfo.js"></script><script src="../versions.js"></script><link href="assets/documenter.css" rel="stylesheet" type="text/css"/></head><body><nav class="toc"><h1>SuiteSparse.jl</h1><select id="version-selector" onChange="window.location.href=this.value" style="visibility: hidden"></select><form class="search" id="search-form" action="search.html"><input id="search-query" name="q" type="text" placeholder="Search docs"/></form><ul><li><a class="toctext" href="index.html">SuiteSparse</a></li><li><a class="toctext" href="cholmod.html">CHOLMOD</a></li><li><a class="toctext" href="umfpack.html">UMFPACK</a></li><li class="current"><a class="toctext" href="spqr.html">SPQR</a><ul class="internal"></ul></li></ul></nav><article id="docs"><header><nav><ul><li><a href="spqr.html">SPQR</a></li></ul><a class="edit-page" href="https://github.com/JuliaLinearAlgebra/SuiteSparse.jl/blob/master/docs/src/spqr.md"><span class="fa"></span> Edit on GitHub</a></nav><hr/><div id="topbar"><span>SPQR</span><a class="fa fa-bars" href="#"></a></div></header><h1><a class="nav-anchor" id="SPQR-1" href="#SPQR-1">SPQR</a></h1><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="LinearAlgebra.qr" href="#LinearAlgebra.qr"><code>LinearAlgebra.qr</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-none">qr(A) -&gt; QRSparse</code></pre><p>Compute the <code>QR</code> factorization of a sparse matrix <code>A</code>. Fill-reducing row and column permutations are used such that <code>F.R = F.Q&#39;*A[F.prow,F.pcol]</code>. The main application of this type is to solve least squares or underdetermined problems with <a href="spqr.html#Base.:\\"><code>\</code></a>. The function calls the C library SPQR.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl">julia&gt; A = sparse([1,2,3,4], [1,1,2,2], [1.0,1.0,1.0,1.0])
+4×2 SparseArrays.SparseMatrixCSC{Float64,Int64} with 4 stored entries:
+  [1, 1]  =  1.0
+  [2, 1]  =  1.0
+  [3, 2]  =  1.0
+  [4, 2]  =  1.0
+
+julia&gt; qr(A)
+SuiteSparse.SPQR.QRSparse{Float64,Int64}
+Q factor:
+4×4 SuiteSparse.SPQR.QRSparseQ{Float64,Int64}:
+ -0.707107   0.0        0.0       -0.707107
+  0.0       -0.707107  -0.707107   0.0
+  0.0       -0.707107   0.707107   0.0
+ -0.707107   0.0        0.0        0.707107
+R factor:
+2×2 SparseArrays.SparseMatrixCSC{Float64,Int64} with 2 stored entries:
+  [1, 1]  =  -1.41421
+  [2, 2]  =  -1.41421
+Row permutation:
+4-element Array{Int64,1}:
+ 1
+ 3
+ 4
+ 2
+Column permutation:
+2-element Array{Int64,1}:
+ 1
+ 2</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/JuliaLinearAlgebra/SuiteSparse.jl/blob/0dc60a371f46321163cebd9240f1cf88661b0a4e/src/spqr.jl#L160-L199">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Base.getproperty" href="#Base.getproperty"><code>Base.getproperty</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-none">getproperty(F::QRSparse, d::Symbol)</code></pre><p>Extract factors of a QRSparse factorization. Possible values of <code>d</code> are</p><ul><li><code>Q</code> : <code>QRSparseQ</code> matrix of the <span>$Q$</span> factor in Householder form</li><li><code>R</code> : <code>UpperTriangular</code> <span>$R$</span> factor</li><li><code>prow</code> : Vector of the row permutations applied to the factorized matrix</li><li><code>pcol</code> : Vector of the column permutations applied to the factorized matrix</li></ul><p><strong>Examples</strong></p><pre><code class="language-julia-repl">julia&gt; F = qr(sparse([1,3,2,3,4], [1,1,2,3,4], [1.0,2.0,3.0,4.0,5.0]));
+
+julia&gt; F.Q
+4×4 SuiteSparse.SPQR.QRSparseQ{Float64,Int64}:
+ 1.0  0.0  0.0  0.0
+ 0.0  1.0  0.0  0.0
+ 0.0  0.0  1.0  0.0
+ 0.0  0.0  0.0  1.0
+
+julia&gt; F.R
+4×4 SparseArrays.SparseMatrixCSC{Float64,Int64} with 5 stored entries:
+  [1, 1]  =  3.0
+  [2, 2]  =  4.0
+  [3, 3]  =  5.0
+  [2, 4]  =  2.0
+  [4, 4]  =  1.0
+
+julia&gt; F.prow
+4-element Array{Int64,1}:
+ 2
+ 3
+ 4
+ 1
+
+julia&gt; F.pcol
+4-element Array{Int64,1}:
+ 2
+ 3
+ 4
+ 1</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/JuliaLinearAlgebra/SuiteSparse.jl/blob/0dc60a371f46321163cebd9240f1cf88661b0a4e/src/spqr.jl#L262-L304">source</a></section><section class="docstring"><div class="docstring-header"><a class="docstring-binding" id="Base.:\\" href="#Base.:\\"><code>Base.:\</code></a> — <span class="docstring-category">Function</span>.</div><div><div><pre><code class="language-none">(\)(F::QRSparse, B::StridedVecOrMat)</code></pre><p>Solve the least squares problem <span>$\min\|Ax - b\|^2$</span> or the linear system of equations <span>$Ax=b$</span> when <code>F</code> is the sparse QR factorization of <span>$A$</span>. A basic solution is returned when the problem is underdetermined.</p><p><strong>Examples</strong></p><pre><code class="language-julia-repl">julia&gt; A = sparse([1,2,4], [1,1,1], [1.0,1.0,1.0], 4, 2)
+4×2 SparseArrays.SparseMatrixCSC{Float64,Int64} with 3 stored entries:
+  [1, 1]  =  1.0
+  [2, 1]  =  1.0
+  [4, 1]  =  1.0
+
+julia&gt; qr(A)\fill(1.0, 4)
+2-element Array{Float64,1}:
+ 1.0
+ 0.0</code></pre></div></div><a class="source-link" target="_blank" href="https://github.com/JuliaLinearAlgebra/SuiteSparse.jl/blob/0dc60a371f46321163cebd9240f1cf88661b0a4e/src/spqr.jl#L395-L415">source</a></section><footer><hr/><a class="previous" href="umfpack.html"><span class="direction">Previous</span><span class="title">UMFPACK</span></a></footer></article></body></html>
