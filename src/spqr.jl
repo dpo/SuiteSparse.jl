@@ -167,22 +167,22 @@ solve least squares or underdetermined problems with [`\\`](@ref). The function 
 # Examples
 ```jldoctest
 julia> A = sparse([1,2,3,4], [1,1,2,2], [1.0,1.0,1.0,1.0])
-4×2 SparseMatrixCSC{Float64,Int64} with 4 stored entries:
+4×2 SparseArrays.SparseMatrixCSC{Float64,Int64} with 4 stored entries:
   [1, 1]  =  1.0
   [2, 1]  =  1.0
   [3, 2]  =  1.0
   [4, 2]  =  1.0
 
 julia> qr(A)
-Base.SparseArrays.SPQR.QRSparse{Float64,Int64}
+SuiteSparse.SPQR.QRSparse{Float64,Int64}
 Q factor:
-4×4 Base.SparseArrays.SPQR.QRSparseQ{Float64,Int64}:
+4×4 SuiteSparse.SPQR.QRSparseQ{Float64,Int64}:
  -0.707107   0.0        0.0       -0.707107
   0.0       -0.707107  -0.707107   0.0
   0.0       -0.707107   0.707107   0.0
  -0.707107   0.0        0.0        0.707107
 R factor:
-2×2 SparseMatrixCSC{Float64,Int64} with 2 stored entries:
+2×2 SparseArrays.SparseMatrixCSC{Float64,Int64} with 2 stored entries:
   [1, 1]  =  -1.41421
   [2, 2]  =  -1.41421
 Row permutation:
@@ -273,14 +273,14 @@ Extract factors of a QRSparse factorization. Possible values of `d` are
 julia> F = qr(sparse([1,3,2,3,4], [1,1,2,3,4], [1.0,2.0,3.0,4.0,5.0]));
 
 julia> F.Q
-4×4 Base.SparseArrays.SPQR.QRSparseQ{Float64,Int64}:
+4×4 SuiteSparse.SPQR.QRSparseQ{Float64,Int64}:
  1.0  0.0  0.0  0.0
  0.0  1.0  0.0  0.0
  0.0  0.0  1.0  0.0
  0.0  0.0  0.0  1.0
 
 julia> F.R
-4×4 SparseMatrixCSC{Float64,Int64} with 5 stored entries:
+4×4 SparseArrays.SparseMatrixCSC{Float64,Int64} with 5 stored entries:
   [1, 1]  =  3.0
   [2, 2]  =  4.0
   [3, 3]  =  5.0
@@ -402,7 +402,7 @@ when the problem is underdetermined.
 # Examples
 ```jldoctest
 julia> A = sparse([1,2,4], [1,1,1], [1.0,1.0,1.0], 4, 2)
-4×2 SparseMatrixCSC{Float64,Int64} with 3 stored entries:
+4×2 SparseArrays.SparseMatrixCSC{Float64,Int64} with 3 stored entries:
   [1, 1]  =  1.0
   [2, 1]  =  1.0
   [4, 1]  =  1.0

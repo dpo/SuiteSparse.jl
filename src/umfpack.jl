@@ -116,8 +116,8 @@ Base.transpose(F::UmfpackLU) = Transpose(F)
 Compute the LU factorization of a sparse matrix `A`.
 
 For sparse `A` with real or complex element type, the return type of `F` is
-`UmfpackLU{Tv, Ti}`, with `Tv` = [`Float64`](@ref) or `ComplexF64` respectively and
-`Ti` is an integer type ([`Int32`](@ref) or [`Int64`](@ref)).
+`UmfpackLU{Tv, Ti}`, with `Tv` = `Float64` or `ComplexF64` respectively and
+`Ti` is an integer type (`Int32` or `Int64`).
 
 When `check = true`, an error is thrown if the decomposition fails.
 When `check = false`, responsibility for checking the decomposition's
@@ -141,12 +141,11 @@ The relation between `F` and `A` is
 `F` further supports the following functions:
 
 - [`\\`](@ref)
-- [`cond`](@ref)
 - [`det`](@ref)
 
 !!! note
     `lu(A::SparseMatrixCSC)` uses the UMFPACK library that is part of
-    SuiteSparse. As this library only supports sparse matrices with [`Float64`](@ref) or
+    SuiteSparse. As this library only supports sparse matrices with `Float64` or
     `ComplexF64` elements, `lu` converts `A` into a copy that is of type
     `SparseMatrixCSC{Float64}` or `SparseMatrixCSC{ComplexF64}` as appropriate.
 """

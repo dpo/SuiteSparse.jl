@@ -1384,10 +1384,7 @@ end
 """
     cholesky!(F::Factor, A; shift = 0.0, check = true) -> CHOLMOD.Factor
 
-Compute the Cholesky (``LL'``) factorization of `A`, reusing the symbolic
-factorization `F`. `A` must be a [`SparseMatrixCSC`](@ref) or a [`Symmetric`](@ref)/
-[`Hermitian`](@ref) view of a `SparseMatrixCSC`. Note that even if `A` doesn't
-have the type tag, it must still be symmetric or Hermitian.
+Compute the Cholesky (``LL'``) factorization of `A`, reusing the symbolic factorization `F`. `A` must be a `SparseMatrixCSC` or a `Symmetric`/`Hermitian` view of a `SparseMatrixCSC`. Note that even if `A` doesn't have the type tag, it must still be symmetric or Hermitian.
 
 See also [`cholesky`](@ref).
 
@@ -1424,8 +1421,7 @@ end
     cholesky(A; shift = 0.0, check = true, perm = Int[]) -> CHOLMOD.Factor
 
 Compute the Cholesky factorization of a sparse positive definite matrix `A`.
-`A` must be a [`SparseMatrixCSC`](@ref) or a [`Symmetric`](@ref)/[`Hermitian`](@ref)
-view of a `SparseMatrixCSC`. Note that even if `A` doesn't
+`A` must be a `SparseMatrixCSC` or a `Symmetric`/`Hermitian` view of a `SparseMatrixCSC`. Note that even if `A` doesn't
 have the type tag, it must still be symmetric or Hermitian.
 A fill-reducing permutation is used.
 `F = cholesky(A)` is most frequently used to solve systems of equations with `F\\b`,
@@ -1483,7 +1479,7 @@ end
     ldlt!(F::Factor, A; shift = 0.0, check = true) -> CHOLMOD.Factor
 
 Compute the ``LDL'`` factorization of `A`, reusing the symbolic factorization `F`.
-`A` must be a [`SparseMatrixCSC`](@ref) or a [`Symmetric`](@ref)/[`Hermitian`](@ref)
+`A` must be a `SparseMatrixCSC` or a `Symmetric`/`Hermitian`
 view of a `SparseMatrixCSC`. Note that even if `A` doesn't
 have the type tag, it must still be symmetric or Hermitian.
 
@@ -1527,13 +1523,13 @@ end
     ldlt(A; shift = 0.0, check = true, perm=Int[]) -> CHOLMOD.Factor
 
 Compute the ``LDL'`` factorization of a sparse matrix `A`.
-`A` must be a [`SparseMatrixCSC`](@ref) or a [`Symmetric`](@ref)/[`Hermitian`](@ref)
+`A` must be a `SparseMatrixCSC` or a `Symmetric`/`Hermitian`
 view of a `SparseMatrixCSC`. Note that even if `A` doesn't
 have the type tag, it must still be symmetric or Hermitian.
 A fill-reducing permutation is used. `F = ldlt(A)` is most frequently
 used to solve systems of equations `A*x = b` with `F\\b`. The returned
 factorization object `F` also supports the methods [`diag`](@ref),
-[`det`](@ref), [`logdet`](@ref), and [`inv`](@ref).
+[`det`](@ref), and [`logdet`](@ref).
 You can extract individual factors from `F` using `F.L`.
 However, since pivoting is on by default, the factorization is internally
 represented as `A == P'*L*D*L'*P` with a permutation matrix `P`;
@@ -1754,6 +1750,11 @@ function \(adjA::Adjoint{<:Any,<:RealHermSymComplexHermF64SSL}, B::StridedVecOrM
 end
 
 ## Other convenience methods
+"""
+    diag(F::Factor)
+
+Return a vector of the diagonal elements of the triangular factor of a Cholesky factorization or the diagonal of an LDLt factorization.
+"""
 function diag(F::Factor{Tv}) where Tv
     f = unsafe_load(pointer(F))
     fsuper = f.super
@@ -1786,6 +1787,11 @@ function diag(F::Factor{Tv}) where Tv
     res
 end
 
+"""
+    logdet(F::Factor)
+
+Compute the logarithm of the determinant of the factorized matrix
+"""
 function logdet(F::Factor{Tv}) where Tv<:VTypes
     f = unsafe_load(pointer(F))
     res = zero(Tv)
@@ -1793,8 +1799,18 @@ function logdet(F::Factor{Tv}) where Tv<:VTypes
     f.is_ll != 0 ? 2res : res
 end
 
-det(L::Factor) = exp(logdet(L))
+"""
+    det(F::Factor)
 
+Compute the determinant of the factorized matrix
+"""
+det(F::Factor) = exp(logdet(F))
+
+"""
+    issuccess(F::Factor)
+
+Test if the factorization succeeded
+"""
 function issuccess(F::Factor)
     s = unsafe_load(pointer(F))
     return s.minor == size(F, 1)
