@@ -1,5 +1,5 @@
 name = "SuiteSparse"
-uuid = "7a98336c-6e1d-11e8-3411-adbfbd241079"
+uuid = "4607b0f0-06f3-5cda-b6b1-a6196a1729e9"
 
 [deps]
 BinaryProvider = "b99e7846-7c00-51b0-8f62-c81ae34c0232"
