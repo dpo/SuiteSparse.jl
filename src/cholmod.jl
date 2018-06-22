@@ -20,13 +20,12 @@ export
 
 import SparseArrays: AbstractSparseMatrix, SparseMatrixCSC, indtype, sparse, spzeros, nnz
 
-import ..increment, ..increment!, ..decrement, ..decrement!, ..libsuitesparseconfig, ..libsuitesparse_wrapper
+import ..SuiteSparse: increment, increment!, decrement, decrement!, libcholmod,
+    libsuitesparseconfig, libsuitesparse_wrapper
 
 #########
 # Setup #
 #########
-
-const libcholmod = joinpath(@__DIR__, "..", "deps", "usr", "lib", "libcholmod")
 
 include("cholmod_h.jl")
 
@@ -79,7 +78,7 @@ const build_version = VersionNumber(build_version_array...)
 function __init__()
     try
         ### Check if the linked library is compatible with the Julia code
-        if Libdl.dlsym_e(Libdl.dlopen("libcholmod"), :cholmod_version) != C_NULL
+        if Libdl.dlsym_e(Libdl.dlopen(libcholmod), :cholmod_version) != C_NULL
             current_version_array = Vector{Cint}(undef, 3)
             ccall((:cholmod_version, libcholmod), Cint, (Ptr{Cint},), current_version_array)
             current_version = VersionNumber(current_version_array...)

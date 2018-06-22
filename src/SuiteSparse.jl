@@ -7,8 +7,7 @@ module SuiteSparse
 import Base: \
 import LinearAlgebra: ldiv!, rdiv!
 
-const libsuitesparseconfig   = joinpath(@__DIR__, "..", "deps", "usr", "lib", "libsuitesparseconfig")
-const libsuitesparse_wrapper = joinpath(@__DIR__, "..", "deps", "usr", "lib", "libsuitesparse_wrapper")
+include("../deps/deps.jl")
 
 ## Functions to switch to 0-based indexing to call external sparse solvers
 
@@ -26,11 +25,9 @@ function increment!(A::AbstractArray{T}) where T<:Integer
 end
 increment(A::AbstractArray{<:Integer}) = increment!(copy(A))
 
-if Base.USE_GPL_LIBS
-    include("umfpack.jl")
-    include("cholmod.jl")
-    include("spqr.jl")
-    # include("deprecated.jl")
-end
+include("umfpack.jl")
+include("cholmod.jl")
+include("spqr.jl")
+# include("deprecated.jl")
 
 end # module SuiteSparse

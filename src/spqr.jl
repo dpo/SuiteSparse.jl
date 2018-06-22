@@ -4,8 +4,7 @@ module SPQR
 
 import Base: \
 using LinearAlgebra
-
-const libspqr = joinpath(@__DIR__, "..", "deps", "usr", "lib", "libspqr")
+using ..SuiteSparse: libspqr
 
 # ordering options */
 const ORDERING_FIXED   = Int32(0)

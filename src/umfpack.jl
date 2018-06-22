@@ -11,14 +11,12 @@ import LinearAlgebra: Factorization, det, lu, ldiv!
 using SparseArrays
 import SparseArrays: nnz
 
-import ..increment, ..increment!, ..decrement, ..decrement!, ..libsuitesparse_wrapper
+import ..SuiteSparse: increment, increment!, decrement, decrement!, libsuitesparse_wrapper, libumfpack
 
 include("umfpack_h.jl")
 struct MatrixIllConditionedException <: Exception
     msg::AbstractString
 end
-
-const libumfpack = joinpath(@__DIR__, "..", "deps", "usr", "lib", "libumfpack")
 
 function umferror(status::Integer)
     if status==UMFPACK_OK
