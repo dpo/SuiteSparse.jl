@@ -17,6 +17,9 @@ const ORDERING_METIS   = Int32(6) # metis(A'*A)
 const ORDERING_DEFAULT = Int32(7) # SuiteSparseQR default ordering
 const ORDERING_BEST    = Int32(8) # try COLAMD, AMD, and METIS; pick best
 const ORDERING_BESTAMD = Int32(9) # try COLAMD and AMD; pick best#
+const ORDERINGS = [ORDERING_FIXED, ORDERING_NATURAL, ORDERING_COLAMD, ORDERING_GIVEN,
+                   ORDERING_CHOLMOD, ORDERING_AMD, ORDERING_METIS, ORDERING_DEFAULT,
+                   ORDERING_BEST, ORDERING_BESTAMD]
 
 # Let [m n] = size of the matrix after pruning singletons.  The default
 # ordering strategy is to use COLAMD if m <= 2*n.  Otherwise, AMD(A'A) is
@@ -137,7 +140,10 @@ Base.size(Q::QRSparseQ) = (size(Q.factors, 1), size(Q.factors, 1))
 _default_tol(A::SparseMatrixCSC) =
     20*sum(size(A))*eps(real(eltype(A)))*maximum(norm(view(A, :, i)) for i in 1:size(A, 2))
 
-function LinearAlgebra.qr(A::SparseMatrixCSC{Tv}; tol = _default_tol(A)) where {Tv <: CHOLMOD.VTypes}
+function LinearAlgebra.qr(A::SparseMatrixCSC{Tv};
+                          tol = _default_tol(A),
+                          ordering = ORDERING_DEFAULT) where {Tv <: CHOLMOD.VTypes}
+    ordering ∈ ORDERINGS || error("invalid ordering: $ordering")
     R     = Ref{Ptr{CHOLMOD.C_Sparse{Tv}}}()
     E     = Ref{Ptr{CHOLMOD.SuiteSparse_long}}()
     H     = Ref{Ptr{CHOLMOD.C_Sparse{Tv}}}()
@@ -145,7 +151,7 @@ function LinearAlgebra.qr(A::SparseMatrixCSC{Tv}; tol = _default_tol(A)) where {
     HTau  = Ref{Ptr{CHOLMOD.C_Dense{Tv}}}(C_NULL)
 
     # SPQR doesn't accept symmetric matrices so we explicitly set the stype
-    r, p, hpinv = _qr!(ORDERING_DEFAULT, tol, 0, 0, Sparse(A, 0),
+    r, p, hpinv = _qr!(ordering, tol, 0, 0, Sparse(A, 0),
         C_NULL, C_NULL, C_NULL, C_NULL,
         R, E, H, HPinv, HTau)
 

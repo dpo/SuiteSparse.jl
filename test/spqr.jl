@@ -87,4 +87,16 @@ end
     @test F.Q*F.R == A[F.prow,F.pcol]
 end
 
+@testset "select ordering" begin
+    A = sparse([1:n; rand(1:m, nn - n)], [1:n; rand(1:n, nn - n)], randn(nn), m, n)
+    B = randn(m, 2)
+    xref = Array(A) \ B
+    for ordering ∈ SuiteSparse.SPQR.ORDERINGS
+      QR = qr(A, ordering=ordering)
+      x = QR \ B
+      @test x ≈ xref
+    end
+    @test_throws MethodError qr(A, ordering=Int32(10))
+end
+
 end
